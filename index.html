@@ -157,13 +157,14 @@
             
             <div class="max-w-4xl mx-auto">
                 <div class="relative">
-                    <iframe 
-                        src="https://www.youtube.com/embed/afDVU8Mbj3k?rel=0&modestbranding=1&showinfo=0"
+                    <video 
                         class="w-full aspect-video rounded-xl shadow-2xl border-2 border-green-500/30"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
+                        controls
+                        preload="metadata"
+                        poster="/episode-two-thumbnail.png">
+                        <source src="/episode-two.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
                 
                 <div class="mt-8 mb-8 bg-green-600/20 border border-green-400/30 rounded-lg p-4 block w-fit mx-auto">
