@@ -76,6 +76,33 @@
         .mobile-menu.active {
             display: block;
         }
+        .hero-bg {
+            background-image: linear-gradient(180deg, rgba(17, 24, 39, 0.45), rgba(17, 24, 39, 0.85)), url('/brande-header.jpg');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+        }
+        .hero-section {
+            min-height: 80vh;
+        }
+        @media (max-width: 640px) {
+            .hero-bg {
+                background-image: linear-gradient(180deg, rgba(17, 24, 39, 0.35), rgba(17, 24, 39, 0.8)), url('/brande-roderick.jpg');
+                background-position: center 15%;
+                background-size: cover;
+            }
+            .hero-section {
+                min-height: 70vh;
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-section {
+                min-height: 90vh;
+            }
+            .hero-bg {
+                background-position: center top;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white">
@@ -112,7 +139,7 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="pt-24 pb-16 gradient-bg">
+    <section class="pt-24 pb-16 gradient-bg hero-bg hero-section">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div class="max-w-4xl mx-auto">
                 <h1 class="text-5xl md:text-6xl font-bold mb-6">
