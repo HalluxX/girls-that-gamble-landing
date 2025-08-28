@@ -236,31 +236,44 @@
                             </div>
                         </div>
 
-                        <!-- Game Info -->
+                        <!-- Game Info (dynamic) -->
                         <div class="flex flex-col items-center mb-3 sm:mb-4 pt-8">
-                                                         <!-- Teams and Logos -->
+                             <!-- Teams and Logos -->
                              <div class="flex items-center gap-2 mb-2">
                                  <div class="flex flex-col items-center">
-                                     <img src="https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png" alt="Sam Houston Bearkats" class="w-8 h-8 mb-1">
-                                     <span class="font-semibold text-sm text-white">Sam Houston</span>
-                                     <span class="text-xs text-gray-400">(0-0)</span>
+                                     <img id="star-away-logo" src="" alt="Away Team" class="w-8 h-8 mb-1">
+                                     <span id="star-away-name" class="font-semibold text-sm text-white">Away</span>
+                                     <span id="star-away-record" class="text-xs text-gray-400">(0-0)</span>
                                  </div>
                                  <span class="mx-2 text-gray-400 font-bold text-lg">@</span>
                                  <div class="flex flex-col items-center">
-                                     <img src="https://a.espncdn.com/i/teamlogos/ncaa/500/98.png" alt="Western Kentucky Hilltoppers" class="w-8 h-8 mb-1">
-                                     <span class="font-semibold text-sm text-white">Western Kentucky</span>
-                                     <span class="text-xs text-gray-400">(0-0)</span>
+                                     <img id="star-home-logo" src="" alt="Home Team" class="w-8 h-8 mb-1">
+                                     <span id="star-home-name" class="font-semibold text-sm text-white">Home</span>
+                                     <span id="star-home-record" class="text-xs text-gray-400">(0-0)</span>
                                  </div>
                              </div>
                             
                             <!-- Game Details -->
                             <div class="text-xs text-gray-300 text-center mb-2">
-                                <div>Aug 23 at 4:00 PM PDT</div>
-                                <div class="text-gray-400">Houchens Industries-L.T. Smith Stadium</div>
+                                <div id="star-game-date">TBD</div>
+                                <div id="star-venue" class="text-gray-400">Venue</div>
                             </div>
                             
+                            <!-- Starters / QBs (dynamic) -->
+                            <div id="star-players" class="hidden items-center gap-2 sm:gap-4 text-xs text-gray-400 mb-2 bg-gray-800/50 rounded-lg p-2">
+                                <div class="text-center flex-1 min-w-0">
+                                    <div class="font-medium text-green-300 text-xs truncate" id="star-away-player-name"></div>
+                                    <div class="text-gray-400 text-[10px] truncate" id="star-away-player-meta"></div>
+                                </div>
+                                <span id="star-role-label" class="text-gray-500 font-bold text-xs">PITCHING</span>
+                                <div class="text-center flex-1 min-w-0">
+                                    <div class="font-medium text-green-300 text-xs truncate" id="star-home-player-name"></div>
+                                    <div class="text-gray-400 text-[10px] truncate" id="star-home-player-meta"></div>
+                                </div>
+                            </div>
+
                             <!-- Weather Info -->
-                            <div class="flex items-center gap-2 text-xs text-gray-300 bg-gray-800/50 px-3 py-1 rounded-full mb-2">
+                            <div class="flex items-center gap-2 text-xs text-gray-300 bg-gray-800/50 px-3 py-1 rounded-full mb-2" id="star-weather" style="display:none;">
                                 <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <circle cx="12" cy="12" r="5"></circle>
                                     <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -272,13 +285,13 @@
                                     <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                                     <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                                 </svg>
-                                <span>Mostly sunny</span>
-                                <span class="text-gray-400">86°F</span>
+                                <span id="star-weather-desc">Weather</span>
+                                <span id="star-weather-temp" class="text-gray-400"></span>
                             </div>
                             
                             <!-- Bet Type Badge -->
-                            <div class="text-xs px-2 py-0.5 bg-gray-800 text-green-400 font-medium border border-green-700 rounded-full">
-                                total
+                            <div id="star-bet-type" class="text-xs px-2 py-0.5 bg-gray-800 text-green-400 font-medium border border-green-700 rounded-full">
+                                Bet
                             </div>
                         </div>
                         
@@ -563,6 +576,84 @@
                 mobileMenu.classList.remove('active');
             });
         });
+
+        // Fetch and populate Star Featured Pick
+        (async function loadStarPick() {
+            try {
+                const res = await fetch('https://girls-that-gamble-backend-production.up.railway.app/api/picks/featured', { cache: 'no-store' });
+                if (!res.ok) throw new Error('Failed to fetch featured picks');
+                const data = await res.json();
+                if (!Array.isArray(data)) return;
+
+                const star = data.find(p => p.isStarFeatured === true);
+                if (!star || !star.game) return; // Only render when an isStarFeatured item exists
+
+                const g = star.game;
+                const comp = g.espnData && Array.isArray(g.espnData.competitions) ? g.espnData.competitions[0] : null;
+                const competitors = comp && Array.isArray(comp.competitors) ? comp.competitors : [];
+
+                const home = competitors.find(c => (c.homeAway || '').toLowerCase() === 'home') || competitors[0] || {};
+                const away = competitors.find(c => (c.homeAway || '').toLowerCase() === 'away') || competitors[1] || {};
+
+                const homeTeam = home.team || {};
+                const awayTeam = away.team || {};
+
+                // Logos and names
+                const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ''; };
+                const setSrc = (id, src, alt) => { const el = document.getElementById(id); if (el) { el.src = src || ''; el.alt = alt || ''; } };
+
+                setSrc('star-away-logo', awayTeam.logo, awayTeam.displayName || awayTeam.name);
+                setText('star-away-name', awayTeam.displayName || awayTeam.name || 'Away');
+                setText('star-away-record', (away.records && away.records[0] && away.records[0].summary) || '');
+
+                setSrc('star-home-logo', homeTeam.logo, homeTeam.displayName || homeTeam.name);
+                setText('star-home-name', homeTeam.displayName || homeTeam.name || 'Home');
+                setText('star-home-record', (home.records && home.records[0] && home.records[0].summary) || '');
+
+                // Date/venue
+                const date = g.gameDate ? new Date(g.gameDate) : null;
+                const dateStr = date ? date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'TBD';
+                setText('star-game-date', dateStr);
+                setText('star-venue', g.venue || '');
+
+                // Weather
+                if (g.weather && (g.weather.displayValue || g.weather.temperature)) {
+                    const wEl = document.getElementById('star-weather');
+                    if (wEl) wEl.style.display = '';
+                    setText('star-weather-desc', g.weather.displayValue || '');
+                    setText('star-weather-temp', g.weather.temperature ? `${g.weather.temperature}°F` : '');
+                }
+
+                // Bet type
+                setText('star-bet-type', (star.betType || '').toLowerCase());
+
+                // Probables / QBs for MLB/NFL
+                const awayProb = (away.probables && away.probables[0]) || null;
+                const homeProb = (home.probables && home.probables[0]) || null;
+
+                const roleLabel = document.getElementById('star-role-label');
+                const playersRow = document.getElementById('star-players');
+                const hasMLB = (awayProb && awayProb.athlete) || (homeProb && homeProb.athlete);
+                const isNFL = (g.sport || '').toUpperCase() === 'NFL';
+
+                if (hasMLB || isNFL) {
+                    if (playersRow) playersRow.classList.remove('hidden');
+                    if (roleLabel) roleLabel.textContent = isNFL ? 'QB' : 'PITCHING';
+
+                    const setPlayer = (prefix, prob) => {
+                        if (!prob) return;
+                        setText(`${prefix}-player-name`, (prob.athlete && prob.athlete.fullName) || prob.displayName || '');
+                        const meta = prob.record ? prob.record.replace(', ', ' • ERA ') : '';
+                        setText(`${prefix}-player-meta`, meta);
+                    };
+
+                    setPlayer('star-away', awayProb);
+                    setPlayer('star-home', homeProb);
+                }
+            } catch (err) {
+                console.warn('Star pick fetch failed', err);
+            }
+        })();
     </script>
     <script>
         // Cloudflare Zaraz custom events for button clicks and video play
