@@ -183,8 +183,11 @@
             <p class="text-xl text-gray-300 mb-8">Get a taste of what we're all about</p>
             
             <div class="max-w-4xl mx-auto">
-                <div class="relative">
+                <!-- Video Player Container -->
+                <div id="video-container" class="relative">
+                    <!-- Local Video Player (default) -->
                     <video 
+                        id="local-video"
                         class="w-full aspect-video rounded-xl shadow-2xl border-2 border-green-500/30"
                         controls
                         preload="metadata"
@@ -192,6 +195,26 @@
                         <source src="/episode-two.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
+                    
+                    <!-- YouTube Embed (hidden by default) -->
+                    <div id="youtube-embed" class="hidden w-full aspect-video rounded-xl shadow-2xl border-2 border-green-500/30 overflow-hidden">
+                        <iframe 
+                            id="youtube-iframe"
+                            class="w-full h-full"
+                            frameborder="0"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    
+                    <!-- Vimeo Embed (hidden by default) -->
+                    <div id="vimeo-embed" class="hidden w-full aspect-video rounded-xl shadow-2xl border-2 border-green-500/30 overflow-hidden">
+                        <iframe 
+                            id="vimeo-iframe"
+                            class="w-full h-full"
+                            frameborder="0"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>
                 
                 <div class="mt-8 mb-8 bg-green-600/20 border border-green-400/30 rounded-lg p-4 block w-fit mx-auto">
@@ -672,18 +695,133 @@
                 });
             });
 
-            // Track first play on the main video
-            var videoEl = document.querySelector('section.bg-gray-900 video');
-            if (videoEl) {
-                var played = false;
-                videoEl.addEventListener('play', function() {
-                    if (!played) {
-                        played = true;
-                        track('video_play_click', { src: videoEl.currentSrc || videoEl.src || '' });
-                    }
-                });
+            // Track first play on the main video (works with all video types)
+            function setupVideoTracking() {
+                const localVideo = document.querySelector('section.bg-gray-900 video');
+                const youtubeEmbed = document.querySelector('#youtube-embed iframe');
+                const vimeoEmbed = document.querySelector('#vimeo-embed iframe');
+                
+                let played = false;
+                
+                // Track local video
+                if (localVideo) {
+                    localVideo.addEventListener('play', function() {
+                        if (!played) {
+                            played = true;
+                            track('video_play_click', { 
+                                type: 'local', 
+                                src: localVideo.currentSrc || localVideo.src || '' 
+                            });
+                        }
+                    });
+                }
+                
+                // Track YouTube video (when iframe loads)
+                if (youtubeEmbed) {
+                    youtubeEmbed.addEventListener('load', function() {
+                        if (!played) {
+                            played = true;
+                            track('video_play_click', { 
+                                type: 'youtube', 
+                                src: youtubeEmbed.src 
+                            });
+                        }
+                    });
+                }
+                
+                // Track Vimeo video (when iframe loads)
+                if (vimeoEmbed) {
+                    vimeoEmbed.addEventListener('load', function() {
+                        if (!played) {
+                            played = true;
+                            track('video_play_click', { 
+                                type: 'vimeo', 
+                                src: vimeoEmbed.src 
+                            });
+                        }
+                    });
+                }
+            }
+            
+            // Setup tracking when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setupVideoTracking);
+            } else {
+                setupVideoTracking();
             }
         })();
+    </script>
+    
+    <!-- Episode Configuration -->
+    <script src="episode-config.js"></script>
+    
+    <!-- Video Source Management Script -->
+    <script>
+        // Video source configuration comes from episode-config.js
+
+        // Function to switch video source
+        function switchVideoSource(type, config) {
+            const localVideo = document.getElementById('local-video');
+            const youtubeEmbed = document.getElementById('youtube-embed');
+            const vimeoEmbed = document.getElementById('vimeo-embed');
+            const youtubeIframe = document.getElementById('youtube-iframe');
+            const vimeoIframe = document.getElementById('vimeo-iframe');
+
+            // Hide all video players
+            localVideo.classList.add('hidden');
+            youtubeEmbed.classList.add('hidden');
+            vimeoEmbed.classList.add('hidden');
+
+            // Show and configure the selected video player
+            switch (type) {
+                case 'local':
+                    localVideo.classList.remove('hidden');
+                    if (config.localSrc) {
+                        localVideo.src = config.localSrc;
+                        localVideo.load();
+                    }
+                    break;
+                    
+                case 'youtube':
+                    if (config.youtubeId) {
+                        youtubeIframe.src = `https://www.youtube.com/embed/${config.youtubeId}?rel=0&modestbranding=1`;
+                        youtubeEmbed.classList.remove('hidden');
+                    }
+                    break;
+                    
+                case 'vimeo':
+                    if (config.vimeoId) {
+                        vimeoIframe.src = `https://player.vimeo.com/video/${config.vimeoId}?h=hash&dnt=1`;
+                        vimeoEmbed.classList.remove('hidden');
+                    }
+                    break;
+            }
+        }
+
+        // Function to update episode configuration
+        function updateEpisode(newConfig) {
+            Object.assign(episodeConfig.currentEpisode, newConfig);
+            switchVideoSource(episodeConfig.currentEpisode.type, episodeConfig.currentEpisode);
+        }
+
+        // Initialize video player on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            switchVideoSource(episodeConfig.currentEpisode.type, episodeConfig.currentEpisode);
+        });
+
+        // Example: To change to a different episode, call:
+        // updateEpisode({
+        //     type: 'youtube',
+        //     youtubeId: 'dQw4w9WgXcQ',
+        //     title: 'New Episode'
+        // });
+        
+        // Example: To change to a local file:
+        // updateEpisode({
+        //     type: 'local',
+        //     localSrc: '/new-episode.mp4',
+        //     title: 'New Episode'
+        // });
     </script>
 </body>
 </html>
