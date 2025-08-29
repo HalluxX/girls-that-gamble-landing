@@ -5,12 +5,12 @@ const episodeConfig = {
     // Current episode configuration
     currentEpisode: {
         type: 'vimeo', // 'local', 'youtube', or 'vimeo'
-        title: 'Episode Three',
+        title: 'College 8/30 Texas /ohio st   Utah/ucla',
         thumbnail: '',
         localSrc: '',
         youtubeId: '',
-        vimeoId: '1114095611',
-        vimeoUrl: 'https://player.vimeo.com/video/1114095611?h=ad12381324' 
+        vimeoId: '1113994660',
+        vimeoUrl: 'https://player.vimeo.com/video/1113994660?h=a6ef9b9b2c' 
     }
 };
 
