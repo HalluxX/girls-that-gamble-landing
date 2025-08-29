@@ -9,7 +9,8 @@ const episodeConfig = {
         thumbnail: '',
         localSrc: '',
         youtubeId: '',
-        vimeoId: '1114095611'
+        vimeoId: '1114095611',
+        vimeoUrl: 'https://player.vimeo.com/video/1114095611?h=ad12381324' 
     }
 };
 

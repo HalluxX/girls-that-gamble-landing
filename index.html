@@ -791,7 +791,9 @@
                     
                 case 'vimeo':
                     if (config.vimeoId) {
-                        vimeoIframe.src = `https://player.vimeo.com/video/${config.vimeoId}?h=hash&dnt=1`;
+                        // Try the full URL first, then fall back to ID if needed
+                        const vimeoUrl = config.vimeoUrl || `https://player.vimeo.com/video/${config.vimeoId}`;
+                        vimeoIframe.src = vimeoUrl;
                         vimeoEmbed.classList.remove('hidden');
                     }
                     break;
