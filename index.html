@@ -153,18 +153,17 @@
                     Join the most exciting sports betting advice platform today.
                 </p>
                                  <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                     <a href="https://girlsthatgamble.live/signup" data-cf-event="hero_signup" class="cta-button text-white px-6 sm:px-8 py-4 rounded-lg text-lg sm:text-xl font-bold">
+                     <a href="https://girlsthatgamble.live/signup" data-cf-event="hero_signup" class="cta-button text-white px-8 sm:px-12 py-5 rounded-2xl text-xl sm:text-2xl font-bold">
                          🚀 Get Started - 100% FREE
                      </a>
                      <a 
                         href="https://girlsthatgamble.live/watch" 
                         data-cf-event="hero_star_pick" 
-                        class="relative border-4 border-yellow-400 bg-gradient-to-r from-yellow-400 via-green-400 to-green-600 text-gray-900 hover:bg-yellow-500 hover:text-white px-8 sm:px-12 py-5 rounded-2xl text-2xl sm:text-3xl font-extrabold shadow-xl transition-all duration-200 pulse-animation"
+                        class="relative border-4 border-yellow-400 bg-gradient-to-r from-yellow-400 via-green-400 to-green-600 text-gray-900 hover:bg-yellow-500 hover:text-white px-8 sm:px-12 py-5 rounded-2xl text-xl sm:text-2xl font-extrabold shadow-xl transition-all duration-200 pulse-animation"
                         style="box-shadow: 0 0 40px 0 #facc15, 0 4px 20px 0 #059669;">
                         <span class="inline-flex items-center">
                             <span>
-                                <span class="uppercase tracking-widest">Utah/UCLA Show Pick</span>
-                                <span class="block text-lg font-bold text-green-900">$9.99</span>
+                                <span class="uppercase tracking-widest">Oklahoma st vs Oregon</span>
                             </span>
                         </span>
                      </a>
@@ -179,11 +178,11 @@
                 </div>
                 
                 <!-- Show Announcement -->
-                <div class="mt-8 bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-lg p-4 inline-block">
+                <!-- <div class="mt-8 bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-lg p-4 inline-block">
                     <p class="text-yellow-300 font-semibold">
                         Next episode: August 29th!
                     </p>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
@@ -195,38 +194,14 @@
             <p class="text-xl text-gray-300 mb-8">Get a taste of what we're all about</p>
             
             <div class="max-w-4xl mx-auto">
-                <!-- Video Player Container -->
-                <div id="video-container" class="relative">
-                    <!-- Local Video Player (default) -->
-                    <video 
-                        id="local-video"
-                        class="w-full aspect-video rounded-xl shadow-2xl border-2 border-green-500/30"
-                        controls
-                        preload="metadata">
-                        <source src="" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    
-                    <!-- YouTube Embed (hidden by default) -->
-                    <div id="youtube-embed" class="hidden w-full aspect-video rounded-xl shadow-2xl border-2 border-green-500/30 overflow-hidden">
-                        <iframe 
-                            id="youtube-iframe"
-                            class="w-full h-full"
-                            frameborder="0"
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                    
-                    <!-- Vimeo Embed (hidden by default) -->
-                    <div id="vimeo-embed" class="hidden w-full aspect-video rounded-xl shadow-2xl border-2 border-green-500/30 overflow-hidden">
-                        <iframe 
-                            id="vimeo-iframe"
-                            class="w-full h-full"
-                            frameborder="0"
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                </div>
+                <!-- Video Player -->
+                <video 
+                    class="w-full aspect-video rounded-xl shadow-2xl border-2 border-green-500/30"
+                    controls
+                    preload="metadata">
+                    <source src="SD-Vs-Washington.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
                 
                 <div class="mt-8 mb-8 bg-green-600/20 border border-green-400/30 rounded-lg p-4 block w-fit mx-auto">
                     <p class="text-green-300 font-semibold">
@@ -383,11 +358,11 @@
                          on August 29th. Get ready for expert analysis, insights, 
                          and the perfect blend of sports knowledge and personality.
                      </p>
-                     <div class="bg-yellow-600/20 border border-yellow-500/30 rounded-lg p-4 mb-6">
+                     <!-- <div class="bg-yellow-600/20 border border-yellow-500/30 rounded-lg p-4 mb-6">
                          <p class="text-yellow-300 font-semibold">
                              Next Episode: August 29th • Live Sports Talk Show
                          </p>
-                     </div>
+                     </div> -->
                  </div>
                  
                  <!-- Team Info -->
@@ -551,7 +526,7 @@
                      🚀 Get Started - 100% FREE
                  </a>
                 <p class="text-gray-400 text-sm">
-                    No credit card required • No hidden fees • Cancel anytime • Next Episode: August 29th
+                    No credit card required • No hidden fees • Cancel anytime • Weekly Episodes
                 </p>
             </div>
             
@@ -706,48 +681,20 @@
                 });
             });
 
-            // Track first play on the main video (works with all video types)
+            // Track first play on the main video
             function setupVideoTracking() {
-                const localVideo = document.querySelector('section.bg-gray-900 video');
-                const youtubeEmbed = document.querySelector('#youtube-embed iframe');
-                const vimeoEmbed = document.querySelector('#vimeo-embed iframe');
+                const video = document.querySelector('section.bg-gray-900 video');
                 
                 let played = false;
                 
-                // Track local video
-                if (localVideo) {
-                    localVideo.addEventListener('play', function() {
+                // Track video play
+                if (video) {
+                    video.addEventListener('play', function() {
                         if (!played) {
                             played = true;
                             track('video_play_click', { 
                                 type: 'local', 
-                                src: localVideo.currentSrc || localVideo.src || '' 
-                            });
-                        }
-                    });
-                }
-                
-                // Track YouTube video (when iframe loads)
-                if (youtubeEmbed) {
-                    youtubeEmbed.addEventListener('load', function() {
-                        if (!played) {
-                            played = true;
-                            track('video_play_click', { 
-                                type: 'youtube', 
-                                src: youtubeEmbed.src 
-                            });
-                        }
-                    });
-                }
-                
-                // Track Vimeo video (when iframe loads)
-                if (vimeoEmbed) {
-                    vimeoEmbed.addEventListener('load', function() {
-                        if (!played) {
-                            played = true;
-                            track('video_play_click', { 
-                                type: 'vimeo', 
-                                src: vimeoEmbed.src 
+                                src: video.currentSrc || video.src || '' 
                             });
                         }
                     });
@@ -761,67 +708,6 @@
                 setupVideoTracking();
             }
         })();
-    </script>
-    
-    <!-- Episode Configuration -->
-    <script src="episode-config.js"></script>
-    
-    <!-- Video Source Management Script -->
-    <script>
-        // Video source configuration comes from episode-config.js
-
-        // Function to switch video source
-        function switchVideoSource(type, config) {
-            const localVideo = document.getElementById('local-video');
-            const youtubeEmbed = document.getElementById('youtube-embed');
-            const vimeoEmbed = document.getElementById('vimeo-embed');
-            const youtubeIframe = document.getElementById('youtube-iframe');
-            const vimeoIframe = document.getElementById('vimeo-iframe');
-
-            // Hide all video players
-            localVideo.classList.add('hidden');
-            youtubeEmbed.classList.add('hidden');
-            vimeoEmbed.classList.add('hidden');
-
-            // Show and configure the selected video player
-            switch (type) {
-                case 'local':
-                    localVideo.classList.remove('hidden');
-                    if (config.localSrc) {
-                        localVideo.src = config.localSrc;
-                        localVideo.load();
-                    }
-                    break;
-                    
-                case 'youtube':
-                    if (config.youtubeId) {
-                        youtubeIframe.src = `https://www.youtube.com/embed/${config.youtubeId}?rel=0&modestbranding=1`;
-                        youtubeEmbed.classList.remove('hidden');
-                    }
-                    break;
-                    
-                case 'vimeo':
-                    if (config.vimeoId) {
-                        // Try the full URL first, then fall back to ID if needed
-                        const vimeoUrl = config.vimeoUrl || `https://player.vimeo.com/video/${config.vimeoId}`;
-                        vimeoIframe.src = vimeoUrl;
-                        vimeoEmbed.classList.remove('hidden');
-                    }
-                    break;
-            }
-        }
-
-        // Function to update episode configuration
-        function updateEpisode(newConfig) {
-            Object.assign(episodeConfig.currentEpisode, newConfig);
-            switchVideoSource(episodeConfig.currentEpisode.type, episodeConfig.currentEpisode);
-        }
-
-        // Initialize video player on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            switchVideoSource(episodeConfig.currentEpisode.type, episodeConfig.currentEpisode);
-        });
-
     </script>
 </body>
 </html>
